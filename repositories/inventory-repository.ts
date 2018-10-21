@@ -40,16 +40,7 @@ export class InventoryRepository extends BaseRepository<Inventory> {
         );
     }
 
-    public fetchAll(onSuccess: (Entity: Inventory[]) => void, onError: (err: any) => void) {
-        this.mySqlConnectionPool.connectionPool.query(
-            "select * from ?",
-            [this.tableName],
-            (err: any, results: any, fields: any) =>
-                (err) ? onError(err) : onSuccess(this.entitiesFactory.create(results))
-        );
-    }
-
-    public FetchUnapproved(onSuccess: (Inventory: any) => void, onError: (err: any) => void) {
-
+    public fetchUnapproved(onSuccess: (Inventory: any) => void, onError: (err: any) => void) {
+        // TODO: still penfdings
     }
 }

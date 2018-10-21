@@ -17,11 +17,9 @@ export abstract class BaseRepository<T extends Entity> {
         onSuccess: (Entity: T[]) => void,
         onError: (err: any) => void
     ) {
-        console.log("I am called baby")
         this.mySqlConnectionPool.connectionPool.query(
             "select * from " + this.tableName,
             (err: any, results: any, fields: any) => {
-                console.log(results);
                 (err) ? onError(err) : onSuccess(this.entitiesFactory.create(results))
             }
         );

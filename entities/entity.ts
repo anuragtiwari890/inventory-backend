@@ -1,5 +1,3 @@
-import {create} from "domain";
-
 export abstract class Entity {
     id: string;
     created: Date;

@@ -1,5 +1,5 @@
 import {ProductType, ProductTypeFactory} from "./product-type";
-import {Entity, EntityFactory, EntitiesFactory} from "./entity";
+import {Entity, EntityFactory} from "./entity";
 
 const uuidv4 = require('uuid/v4');
 

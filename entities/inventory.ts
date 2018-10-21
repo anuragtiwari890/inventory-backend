@@ -2,7 +2,6 @@ import {Product, ProductFactory} from "./product";
 import {Vendor, VendorFactory} from "./vendor";
 import {Batch, BatchFactory} from "./batch";
 import {Entity, EntityFactory, EntitiesFactory} from "./entity";
-import {BADHINTS} from "dns";
 
 const uuidv4 = require('uuid/v4');
 

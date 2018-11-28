@@ -15,17 +15,29 @@ import {BatchFactory, Batch} from "./entities/batch";
 import {VendorRepository} from "./repositories/vender-repository";
 import {VendorFactory, Vendor} from "./entities/Vendor";
 
-var express = require('express');
-var session = require('express-session');
-var bodyParser = require('body-parser');
+const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const redis = require("redis");
+const redisStore = require('connect-redis')(session);
+const cookieParser = require('cookie-parser');
 
-var app = express();
+// TODO: move this to config
+var redisClient = redis.createClient({
+    host: "localhost",
+    port: 32768
+});
+
+const app = express();
 app.use(session({
-    secret: "mysessionsecret",
-    resave: false,
-    saveUninitialized: true,
-    cookie: {maxAge: 60000}
+    secret: 'ssshhhhh',
+    store: new redisStore({client: redisClient,ttl :  260}),
+    saveUninitialized: false,
+    resave: false
 }));
+
+// TODO: Move this to config
+app.use(cookieParser("secretSign#143_!223"));
 
 app.use(bodyParser.json({type: 'application/json'}))
 app.use(bodyParser.urlencoded({extended: true}));
@@ -39,13 +51,25 @@ let batchRepository: BatchRepository = new BatchRepository(mySqlConnectionPool);
 let vendorRepository: VendorRepository = new VendorRepository(mySqlConnectionPool);
 let config = new ConfigImpl();
 
+
+app.get("/login", function(req: any, res: any) {
+    // TODO: Set the session data by fetching the user from teh database
+    var email = req.query.email;
+    console.log(email)
+
+    req.session.email = req.query.email;
+    res.end('done');
+});
+
+app.get("*", function(req: any, res: any, next: any) {
+    // TODO: Session validation here
+    console.log("I am called")
+    return next()
+});
+
 app.get('/', function(req: any, res: any) {
-    if (authenticateSession(req)) {
-        res.redirect(config.ClientBaseURL + "/admin");
-    }
-    else {
-        res.redirect(config.ClientBaseURL + "/index.html");
-    }
+    // TODO: Still to handle this
+    console.log("here")
 });
 
 app.post("/product-type", function(req: any, res: any) {
@@ -234,15 +258,10 @@ app.get("/unapproved-inventories", function(req: any, res: any) {
     }
 });
 
-// app.post("/login", function(req: any, res: any) {
-
-// });
-
 function authenticateSession(req: any): boolean {
-    // return req.session.email ? true : false;
-    return true;
+    return req.session.email ? true : false;
 }
 
-let server = app.listen(config.serverPort, () => {
+app.listen(config.serverPort, () => {
     console.log("Inventory-API: live on port ", config.serverPort);
 });
